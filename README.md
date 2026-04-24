@@ -1,4 +1,4 @@
-# 2d Snake Game
+# 2D Snake Game
 **WEB-115 Final Project Proposal**
 
 Student: Darsh Pratap Singh | Repo: `WEB-115_FinalProject_Singh`
