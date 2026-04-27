@@ -1,0 +1,57 @@
+/* Center everything on the page */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+    font-family: Arial, sans-serif; /* Makes the text look cleaner */
+    margin-top: 40px; /* Adds some breathing room at the top */
+    background-color: #f4f4f9; /* Optional: adds a soft background color */
+}
+
+/* Add some spacing to the inputs so they don't look cramped */
+input {
+    margin-bottom: 10px;
+    padding: 5px;
+    text-align: center;
+}
+
+#table {
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#parameters {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse; 
+    background-color: white; /* Keeps the grid background white */
+}
+
+th, td {
+    border: 2px solid #333; 
+    width: 40px; 
+    height: 40px; 
+    text-align: center;
+    cursor: pointer; 
+    user-select: none; 
+}
+
+
+
+#start {
+    background-color: yellow;
+}
+
+#end {
+    background-color: red;
+}
+
+.snake_current {
+    background-color: lightgreen !important;
+}
