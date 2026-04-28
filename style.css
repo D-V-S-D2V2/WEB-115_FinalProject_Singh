@@ -55,3 +55,7 @@ th, td {
 .snake_current {
     background-color: lightgreen !important;
 }
+
+.apple {
+    background-color: red !important;
+}
