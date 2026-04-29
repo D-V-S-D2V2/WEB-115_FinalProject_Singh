@@ -35,7 +35,7 @@ class Grid {
 
     generateGrid() {        
         this.createTable();
-        this.table = document.getElementById("table");
+        table = document.getElementById("table");
     }
 
     createTable() {
@@ -65,7 +65,10 @@ class Grid {
 
 }
 let direction;
+let game;
+let table;
 let snakePos = []
+let turn;
 class Snake extends Grid {
     constructor() {
         super();
@@ -75,19 +78,37 @@ class Snake extends Grid {
         this.start_game.addEventListener("click", () =>{
             // this.start_game.style.display = "none";
             this.Start_Position()
-            this.game = setInterval(this.Movment, 1000)
+            game = setInterval(() => this.Movment(), 1000)
+        })
+
+        document.addEventListener("keydown", (event) => {
+            console.log('1235')
+            if (event.code === "ArrowUp" || event.key === "w") {
+                console.log("w clicked")
+                snakePos[0][2] = "up"
+            } else if (event.code === "ArrowDown" || event.key === "s") {
+                snakePos[0][2] = "down"
+            } else if (event.code === "ArrowLeft" || event.key === "a") {
+                snakePos[0][2] = "left"
+            } else if (event.code === "ArrowRight" || event.key === "d") {
+                snakePos[0][2] = "right"
+            } else {
+                console.log("should end")
+                clearInterval(game)
+            }
         })
         
     }
 
     Start_Position() {
-        this.table = document.getElementById("table")
+        table = document.getElementById("table")
         let x = Math.floor(Math.random() * (this.widthInput.value));
         let y = Math.ceil(Math.random() * (this.lengthInput.value));
 
-        this.table.rows[y-1].cells[x-1].className = "snake_current"
+        table.rows[y-1].cells[x-1].className = "snake_current"
        
-        snakePos.push([x,y])
+        snakePos.push([x,y, ''])
+        console.log(snakePos)
         this.apple.SpawnApple(snakePos);
         // this.table.rows[Y].cells[X].style.backgroundColor = "darkgreen";
 
@@ -95,36 +116,57 @@ class Snake extends Grid {
     }
 
     Movment() {
-        document.addEventListener("keydown", (event) => {
-            console.log('1235')
-            if (event.code === "ArrowUp" || event.key === "w") {
-                console.log("w clicked")
-                direction = "up"
-                console.log(direction)
-            } else if (event.code === "ArrowDown" || event.key === "s") {
-                direction = "down"
-            } else if (event.code === "ArrowLeft" || event.key === "a") {
-                direction = "left"
-            } else if (event.code === "ArrowRight" || event.key === "d") {
-                direction = "right"
-            } else {
-                console.log("should end")
-                clearInterval(this.game)
-            }
-        })
-        console.log('123')
-        console.log(direction)
-        if (direction == "up") {
-            console.log("inside if")
-            for (let i = 0; i < snakePos.length; i++) {
-                console.log('inn')
-                this.table.rows[snakePos[i][1]-1 + 1].cells[snakePos[i][0]-1].className = 'snake_current';
-                
-                this.table.rows[snakePos[i][1]-1 -1].cells[snakePos[i][0]-1].className = '';
-                snakePos[i] = [snakePos[i][0]-1, snakePos[i][1]-1] 
-            }
+        console.log(snakePos)
+        if (snakePos[0][2] == "down") {
+            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0] - 1].className = 'snake_current';
+            // table.rows[snakePos[i][1] - 2].cells[snakePos[i][0] - 1].className = '';
+
+            snakePos.unshift([snakePos[0][0], snakePos[0][1] + 1, "down"])
+        }
+        if (snakePos[0][2] == "up") {
+            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0] - 1].className = 'snake_current';
+            // table.rows[snakePos[i][1]].cells[snakePos[i][0] - 1].className = '';
+
+            snakePos.unshift([snakePos[0][0], snakePos[0][1] - 1, "up"])
+        }
+        if (snakePos[0][2] == "right") {
+            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0]].className = 'snake_current';
+            // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 1].className = '';
+
+            snakePos.unshift([snakePos[0][0] + 1, snakePos[0][1], "right"])
+        }
+        if (snakePos[0][2] == "left") {
+            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0] - 2].className = 'snake_current';
+                // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 2].textContent= "current"
+
+                // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 1].className = '';
+                // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 1].textContent = "here";
+
+            snakePos.unshift([snakePos[0][0] - 1, snakePos[0][1], "left"])
+        }
+
+
+        // HIDING 
+        if (snakePos[snakePos.length-1][2] == "down") {
+            table.rows[snakePos[snakePos.length-1][1] - 2].cells[snakePos[snakePos.length-1][0] - 1].className = '';
+            snakePos.pop();
+        }
+        if (snakePos[snakePos.length-1][2] == "up") {
+            table.rows[snakePos[snakePos.length-1][1]].cells[snakePos[snakePos.length-1][0] - 1].className = '';
+            snakePos.pop();
+        }
+        if (snakePos[snakePos.length-1][2] == "right") {
+            table.rows[snakePos[snakePos.length-1][1] - 1].cells[snakePos[snakePos.length-1][0] - 1].className = '';
+            snakePos.pop();
+
+        }
+        if (snakePos[snakePos.length-1][2] == "left") {
+            table.rows[snakePos[snakePos.length-1][1] - 1].cells[snakePos[snakePos.length-1][0] - 1].className = '';
+            snakePos.pop();
+
         }
     }
+    
 } 
 class Apple extends Grid {
     constructor() {
@@ -132,8 +174,8 @@ class Apple extends Grid {
     }
 
     SpawnApple(restricted) {
-        console.log('in')
-        this.table = document.getElementById("table")
+        console.log('Apple')
+        table = document.getElementById("table")
         let X = Math.floor(Math.random() * (this.widthInput.value));
         let Y = Math.ceil(Math.random() * (this.lengthInput.value));
         for (let i = 0; i < restricted.length; i++) {
@@ -144,9 +186,8 @@ class Apple extends Grid {
                 this.SpawnApple(restricted);
             }
         }
-        console.log(X, Y)
         try {
-            this.table.rows[Y-1].cells[X-1].className = "apple"
+            table.rows[Y-1].cells[X-1].className = "apple"
         } catch {        }
         
         
