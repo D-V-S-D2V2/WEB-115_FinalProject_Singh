@@ -12,27 +12,6 @@ class Grid {
 
     }
 
-    columnCount() {
-        console.log("in")
-        let table = document.getElementById("table")
-        let columnCounts = 0;
-        let firstRow = table.rows[0]
-        for (let cell of firstRow.cells) {
-            columnCounts++;
-        }
-        return columnCounts
-
-    }
-
-    checkVisited(x, y) {
-        for (let i = 0; i < this.visited.length; i++) {
-            if (this.visited[i][0] === x && this.visited[i][1] === y) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     generateGrid() {        
         this.createTable();
         table = document.getElementById("table");
@@ -69,29 +48,35 @@ let game;
 let table;
 let snakePos = []
 let turn;
+let length = 1;
+let possible = ['up', 'right', 'down', 'left']
+let indexs;
+let currentDirection;
 class Snake extends Grid {
     constructor() {
         super();
-        this.length = 1;
+        
         this.apple = new Apple();
 
         this.start_game.addEventListener("click", () =>{
-            // this.start_game.style.display = "none";
             this.Start_Position()
-            game = setInterval(() => this.Movment(), 1000)
+            document.body.removeChild(this.start_game)
+            game = setInterval(() => this.Movment(), Math.abs((this.speed.value - 10)) * 25)
         })
 
         document.addEventListener("keydown", (event) => {
-            console.log('1235')
             if (event.code === "ArrowUp" || event.key === "w") {
-                console.log("w clicked")
                 snakePos[0][2] = "up"
+                indexs = 0;
             } else if (event.code === "ArrowDown" || event.key === "s") {
                 snakePos[0][2] = "down"
+                indexs = 2;
             } else if (event.code === "ArrowLeft" || event.key === "a") {
                 snakePos[0][2] = "left"
+                indexs = 3;
             } else if (event.code === "ArrowRight" || event.key === "d") {
                 snakePos[0][2] = "right"
+                indexs = 1;
             } else {
                 console.log("should end")
                 clearInterval(game)
@@ -102,10 +87,18 @@ class Snake extends Grid {
 
     Start_Position() {
         table = document.getElementById("table")
-        let x = Math.floor(Math.random() * (this.widthInput.value));
-        let y = Math.ceil(Math.random() * (this.lengthInput.value));
-
-        table.rows[y-1].cells[x-1].className = "snake_current"
+        let x = Math.floor(Math.random() * (this.widthInput.value)) + 1;
+        let y = Math.ceil(Math.random() * (this.lengthInput.value)) + 1;
+        console.log(x, y)
+        try {
+            table.rows[y-1].cells[x-1].className = "snake_current"
+            
+        } catch {
+            x = -1
+            y = -1
+            this.Start_Position();
+        }
+        
        
         snakePos.push([x,y, ''])
         console.log(snakePos)
@@ -116,55 +109,63 @@ class Snake extends Grid {
     }
 
     Movment() {
-        console.log(snakePos)
-        if (snakePos[0][2] == "down") {
-            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0] - 1].className = 'snake_current';
-            // table.rows[snakePos[i][1] - 2].cells[snakePos[i][0] - 1].className = '';
+        let currentX = snakePos[0][0];
+        let currentY = snakePos[0][1];
+        
 
-            snakePos.unshift([snakePos[0][0], snakePos[0][1] + 1, "down"])
+        if (currentDirection == null) {
+        } else if ( currentDirection == 'left' && snakePos[0][2] == 'right') {
+            clearInterval(game)
+        } else if ( currentDirection == 'right' && snakePos[0][2] == 'left') {
+            clearInterval(game)
+        } else if ( currentDirection == 'up' && snakePos[0][2] == 'down') {
+            clearInterval(game)
+        } else if ( currentDirection == 'down' && snakePos[0][2] == 'up') {
+            clearInterval(game)
+        } else {
+            
         }
-        if (snakePos[0][2] == "up") {
-            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0] - 1].className = 'snake_current';
-            // table.rows[snakePos[i][1]].cells[snakePos[i][0] - 1].className = '';
+        currentDirection = snakePos[0][2];
+        
 
-            snakePos.unshift([snakePos[0][0], snakePos[0][1] - 1, "up"])
+        let newX = currentX;
+        let newY = currentY;
+
+        if (currentDirection === "up") newY -= 1;
+        else if (currentDirection === "down") newY += 1;
+        else if (currentDirection === "left") newX -= 1;
+        else if (currentDirection === "right") newX += 1;
+
+        if (currentDirection != '') {
+
+            try {
+
+                if (table.rows[newY - 1].cells[newX - 1].className != 'apple') {
+                    let tail = snakePos.pop();
+                    table.rows[tail[1] - 1].cells[tail[0] - 1].className = '';
+                
+                } else if(table.rows[newY - 1].cells[newX - 1].className == 'snake_current') {
+                    clearInterval(game)
+                } else {
+                    this.apple.SpawnApple(snakePos);
+                    length+=1
+                }
+            
+
+                snakePos.unshift([newX, newY, currentDirection]);
+            
+                table.rows[newY - 1].cells[newX - 1].className = 'snake_current';
+            } catch {
+                clearInterval(game)
+                console.log("end")
+            }
+            
+
+            
         }
-        if (snakePos[0][2] == "right") {
-            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0]].className = 'snake_current';
-            // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 1].className = '';
-
-            snakePos.unshift([snakePos[0][0] + 1, snakePos[0][1], "right"])
-        }
-        if (snakePos[0][2] == "left") {
-            table.rows[snakePos[0][1] - 1].cells[snakePos[0][0] - 2].className = 'snake_current';
-                // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 2].textContent= "current"
-
-                // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 1].className = '';
-                // table.rows[snakePos[i][1] - 1].cells[snakePos[i][0] - 1].textContent = "here";
-
-            snakePos.unshift([snakePos[0][0] - 1, snakePos[0][1], "left"])
-        }
-
-
-        // HIDING 
-        if (snakePos[snakePos.length-1][2] == "down") {
-            table.rows[snakePos[snakePos.length-1][1] - 2].cells[snakePos[snakePos.length-1][0] - 1].className = '';
-            snakePos.pop();
-        }
-        if (snakePos[snakePos.length-1][2] == "up") {
-            table.rows[snakePos[snakePos.length-1][1]].cells[snakePos[snakePos.length-1][0] - 1].className = '';
-            snakePos.pop();
-        }
-        if (snakePos[snakePos.length-1][2] == "right") {
-            table.rows[snakePos[snakePos.length-1][1] - 1].cells[snakePos[snakePos.length-1][0] - 1].className = '';
-            snakePos.pop();
-
-        }
-        if (snakePos[snakePos.length-1][2] == "left") {
-            table.rows[snakePos[snakePos.length-1][1] - 1].cells[snakePos[snakePos.length-1][0] - 1].className = '';
-            snakePos.pop();
-
-        }
+        
+        
+        
     }
     
 } 
@@ -180,15 +181,17 @@ class Apple extends Grid {
         let Y = Math.ceil(Math.random() * (this.lengthInput.value));
         for (let i = 0; i < restricted.length; i++) {
             if (X == restricted[i][0] && Y == restricted[i][1]){
-                console.log("x:" + X + " y:" + Y + " it was the same")
                 X = -1
                 Y = -1
                 this.SpawnApple(restricted);
             }
         }
         try {
-            table.rows[Y-1].cells[X-1].className = "apple"
-        } catch {        }
+            table.rows[Y-1].cells[X].className = "apple"
+        } catch {
+
+            console.log('no apple?')
+        }
         
         
     }
