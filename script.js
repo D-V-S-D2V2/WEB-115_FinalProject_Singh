@@ -7,7 +7,9 @@ class Grid {
         this.start_game = document.getElementById("start_game");
 
         this.generateBtn.addEventListener("click", () => {
+            
             this.generateGrid();
+            document.body.removeChild(document.getElementById("parameters"))
         });
 
     }
@@ -48,7 +50,7 @@ let game;
 let table;
 let snakePos = []
 let turn;
-let length = 1;
+let length = 0;
 let possible = ['up', 'right', 'down', 'left']
 let indexs;
 let currentDirection;
@@ -62,6 +64,10 @@ class Snake extends Grid {
             this.Start_Position()
             document.body.removeChild(this.start_game)
             game = setInterval(() => this.Movment(), Math.abs((this.speed.value - 10)) * 25)
+            
+            
+            
+            
         })
 
         document.addEventListener("keydown", (event) => {
@@ -79,7 +85,6 @@ class Snake extends Grid {
                 indexs = 1;
             } else {
                 console.log("should end")
-                clearInterval(game)
             }
         })
         
@@ -109,6 +114,7 @@ class Snake extends Grid {
     }
 
     Movment() {
+        console.log(length)
         let currentX = snakePos[0][0];
         let currentY = snakePos[0][1];
         
@@ -116,12 +122,44 @@ class Snake extends Grid {
         if (currentDirection == null) {
         } else if ( currentDirection == 'left' && snakePos[0][2] == 'right') {
             clearInterval(game)
+            document.body.removeChild(document.getElementById("table"))
+            document.getElementById("status").innerHTML = "Game Over!"
+            if (localStorage.getItem("high_score") > length) {
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            } else {
+                localStorage.setItem("high_score", length)
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            }
         } else if ( currentDirection == 'right' && snakePos[0][2] == 'left') {
             clearInterval(game)
+            document.body.removeChild(document.getElementById("table"))
+            document.getElementById("status").innerHTML = "Game Over!"
+            if (localStorage.getItem("high_score") > length) {
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            } else {
+                localStorage.setItem("high_score", length)
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            }
         } else if ( currentDirection == 'up' && snakePos[0][2] == 'down') {
             clearInterval(game)
+            document.body.removeChild(document.getElementById("table"))
+            document.getElementById("status").innerHTML = "Game Over!"
+            if (localStorage.getItem("high_score") > length) {
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            } else {
+                localStorage.setItem("high_score", length)
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            }
         } else if ( currentDirection == 'down' && snakePos[0][2] == 'up') {
             clearInterval(game)
+            document.body.removeChild(document.getElementById("table"))
+            document.getElementById("status").innerHTML = "Game Over!"
+            if (localStorage.getItem("high_score") > length) {
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            } else {
+                localStorage.setItem("high_score", length)
+                document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+            }
         } else {
             
         }
@@ -145,7 +183,18 @@ class Snake extends Grid {
                     table.rows[tail[1] - 1].cells[tail[0] - 1].className = '';
                 
                 } else if(table.rows[newY - 1].cells[newX - 1].className == 'snake_current') {
+                    document.removeChild(document.getElementById("table"))
+                    document.getElementById("status").innerHTML = "Game Over!"
+                    document.getElementById("status").innerHTML = "High Score:" + localStorage.getItem("high_score")
                     clearInterval(game)
+                    document.body.removeChild(document.getElementById("table"))
+                    document.getElementById("status").innerHTML = "Game Over!"
+                    if (localStorage.getItem("high_score") > length) {
+                        document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+                    } else {
+                        localStorage.setItem("high_score", length)
+                        document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+                    }
                 } else {
                     this.apple.SpawnApple(snakePos);
                     length+=1
@@ -158,6 +207,15 @@ class Snake extends Grid {
             } catch {
                 clearInterval(game)
                 console.log("end")
+                document.body.removeChild(document.getElementById("table"))
+                document.getElementById("status").innerHTML = "Game Over!"
+                if (localStorage.getItem("high_score") > length) {
+                    document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+                } else {
+                    localStorage.setItem("high_score", length)
+                    document.getElementById("score").innerHTML = "High Score:" + localStorage.getItem("high_score")
+                }
+                
             }
             
 
